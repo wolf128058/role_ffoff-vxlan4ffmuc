@@ -1,0 +1,47 @@
+---
+- name: Create scripts-directory
+  file:
+    path: /home/{{ansible_user_id}}/scripts/
+    state: directory
+
+# The vxlan-id is derived from the domainseed. But this is only a Proof-of-Concept-Script and not yet used.
+- name: Put Mesh-Vpn-Calc-Script to its target location
+  template:
+    src: 'templates/get_mesh_vpn_vxlan_id_from_domain_seed.py.j2'
+    dest: '/home/{{ansible_user_id}}/scripts/get_mesh_vpn_vxlan_id_from_domain_seed.py'
+    owner: 'ffbsee'
+    group: 'ffbsee'
+    mode: 'u=rwx,g=rwx,o='
+
+- name: Slurp link-local from WireGuard
+  become: yes
+  slurp:
+    src: "/etc/wireguard/link-local"
+  register: slurp_wglinklocal
+
+- name: Put vxlan-script to its target location
+  become: yes
+  template:
+    src: 'templates/vxlan.j2'
+    dest: '/usr/local/bin/vxlan'
+    owner: 'root'
+    group: 'root'
+    mode: 'u=rwx,g=rwx,o=x'
+
+- name: Put Service-File to its target location
+  become: yes
+  template:
+    src: 'templates/vxlan.service.j2'
+    dest: '/etc/systemd/system/vxlan.service'
+    owner: 'root'
+    group: 'root'
+    mode: '0777'
+
+- name: Daemon-Reload, Enable and Start for our vxlan-service
+  become: yes
+  ansible.builtin.systemd:
+    name: vxlan.service
+    state: started
+    enabled: yes
+    daemon_reload: yes
+

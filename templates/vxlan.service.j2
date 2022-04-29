@@ -1,0 +1,15 @@
+# Django : 2020-12-15
+[Unit]
+# see man systemd.unit
+Description=Bringing up VXLAN Interface
+After=wg-quick@wg-welt.service
+ 
+[Service]
+# see man systemd.service, systemd.exec
+Type=oneshot
+ExecStart=/usr/local/bin/vxlan
+StandardOutput=syslog
+StandardError=syslog
+ 
+[Install]
+WantedBy=multi-user.target
