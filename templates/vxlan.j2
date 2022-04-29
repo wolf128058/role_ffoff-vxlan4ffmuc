@@ -1,0 +1,14 @@
+#!/bin/bash
+set -eu
+
+# Bring up VXLAN
+ip link show {{ ff_mesh_vpn_interface }} >/dev/null 2>&1 || \
+  ip link add {{ ff_mesh_vpn_interface }} type vxlan id {{ vxlan_id }} local {{ slurp_wglinklocal.content | b64decode | trim }} remote {{ wg_endpoint_link }} dstport 8472 dev {{ ff_wireguard_interface }}
+ip link set up dev {{ ff_mesh_vpn_interface }}
+
+# Bind mesh-vpn to BATMAN-Device
+/sbin/ip link show {{ ff_batman_meshif }} >/dev/null 2>&1
+/usr/sbin/batctl meshif {{ ff_batman_meshif }} if add {{ ff_mesh_vpn_interface }}
+
+# If we have a BATMAN_V env we need to correct the throughput value now
+/usr/sbin/batctl hardif {{ ff_mesh_vpn_interface }} throughput_override 10000

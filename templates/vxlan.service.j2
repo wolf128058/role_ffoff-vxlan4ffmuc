@@ -1,0 +1,15 @@
+# Django : 2020-12-15
+[Unit]
+# see man systemd.unit
+Description=Bringing up VXLAN Interface
+Wants=network-online.target wg-quick@{{ ff_wireguard_interface }}.service
+After=network-online.target wg-quick@{{ ff_wireguard_interface }}.service
+ 
+[Service]
+# see man systemd.service, systemd.exec
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/vxlan
+ 
+[Install]
+WantedBy=multi-user.target

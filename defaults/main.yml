@@ -1,0 +1,7 @@
+---
+vxlan_id: "4831583"
+wg_endpoint_link: "fe80::27c:16ff:fec0:6c74"
+ff_community_segment: "welt"
+ff_batman_meshif: "bat-{{ ff_community_segment }}"
+ff_mesh_vpn_interface: "mesh-vpn"
+ff_wireguard_interface: "wg-welt"

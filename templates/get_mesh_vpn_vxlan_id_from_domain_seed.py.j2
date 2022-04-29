@@ -1,0 +1,19 @@
+import sys
+domain_seed = sys.argv[1]
+    
+def domain_seed_bytes(key, length):
+    import hashlib
+    ret = ''
+    v = ''
+    i = 0
+    
+    while len(ret) < 2 * length:
+        i = i + 1
+        hash_this = v + key + domain_seed + str(i)
+        v = hashlib.md5(hash_this.encode('utf-8')).hexdigest()
+        ret = ret + v
+    
+    return ret[: 2 * length]
+    
+stuff = int(domain_seed_bytes('gluon-mesh-vpn-vxlan', 3), 16)
+print(stuff)
