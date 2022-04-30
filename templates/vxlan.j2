@@ -1,12 +1,12 @@
 #!/bin/bash
 # Django : 2020-12-15
-    
+
 # Bring up VXLAN
 ip link add mesh-vpn type vxlan id {{ vxlan_id }} local {{ slurp_wglinklocal.content | b64decode | trim }} remote {{ wg_endpoint_link }} dstport 8472 dev wg-welt
 ip link set up dev mesh-vpn
-    
+
 # Bind mesh-vpn to BATMAN-Device
 /usr/sbin/batctl meshif bat-welt if add mesh-vpn
-    
+
 # If we have a BATMAN_V env we need to correct the throughput value now
 /usr/sbin/batctl hardif mesh-vpn throughput_override 10000
