@@ -35,7 +35,7 @@
     dest: '/etc/systemd/system/vxlan.service'
     owner: 'root'
     group: 'root'
-    mode: '0777'
+    mode: '0644'
 
 - name: Daemon-Reload, Enable and Start for our vxlan-service
   become: yes
